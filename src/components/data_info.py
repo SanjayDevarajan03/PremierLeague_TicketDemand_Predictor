@@ -115,5 +115,6 @@ def transform_ts_data_into_features_and_target(
         step_size: int):
     """
     Slices and transposes data from time-series format into a (features, target)
+    format that we can use to train Supervised ML models
     """
-    
+    assert set(ts_data.columns) == {'temperature_2m', 'precipitation', 'visibility'}
