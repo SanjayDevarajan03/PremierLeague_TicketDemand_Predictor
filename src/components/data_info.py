@@ -71,7 +71,9 @@ def download_and_extract_weather_data(start_date, end_date):
         hourly_dataframe["date"] = pd.to_datetime(hourly_dataframe["date"]).dt.floor("h").dt.tz_localize(None)
 
         # Save to file
-        file_path = RAW_DATA_weather_DIR/f"weather_data_{start_date}_to{end_date}.csv"
+        start_date_str = start_date.strftime('%Y-%m-%d')
+        end_date_str = end_date.strftime('%Y-%m-%d')
+        file_path = RAW_DATA_weather_DIR/f"weather_data_{start_date_str}_to{end_date_str}.csv"
         hourly_dataframe.to_csv(file_path, index=False)
         print(f"Weather data to saved to {file_path}")
 
@@ -79,3 +81,17 @@ def download_and_extract_weather_data(start_date, end_date):
     except Exception as e:
         print(f"Error downloading weather data : {e}")
         return pd.DataFrame()
+    
+
+def load_full_data(start_date, end_date):
+    df1 = download_and_extract_weather_data(start_date, end_date)
+    full_date = pd.merge(df1,on="date", how="inner" )
+    return full_date
+
+def get_cutoff_indices_features_and_target(
+    data = pd.DataFrame,
+    input_seq_len: int,
+    step_size: int
+    ) -> list:
+
+    
