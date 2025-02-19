@@ -19,7 +19,8 @@ def save_predictions_to_feature_store(predcitions: pd.DataFrame) -> None:
     """
     Saves model predictions to the feature store.
 
-    We add retry to this function because sometimes the feature store API fials, beacuase of too many concurrent jobs.
+    We add retry to this function because sometimes the feature store API fails, 
+    because of too many concurrent jobs.
     """
 
     logger.info('Getting pointer to the feature group for model predictions')

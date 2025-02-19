@@ -11,8 +11,20 @@ from src.logger import get_logger
 logger = get_logger()
 
 def run(date: datetime):
+    """_summary_
+
+    Args:
+        date (datetime): _description
+    
+    Returns:
+        _type_: _description_
     """
-    """
+    logger.info("Fetching raw data from data warehouse")
+
+    # fetch raw ride events from the datawarehouse for the last 28 days
+    # we fetchthe last 28 days, instead of the last hour only, to add redundancy
+    # to the feature_pipeline. This way, if the pipeline fails for some reason
+    # we can still re-write data for that missing hour in a later run.
     demand_values = fetch_demand_values_from_data_warehouse(from_date=(date-timedelta(days=28)),to_date=date)
 
     # add new column with the timestamp in Unix seconds
