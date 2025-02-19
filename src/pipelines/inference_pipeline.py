@@ -54,3 +54,22 @@ def inference(current_date: Optional[pd.TimeStamp]= pd.to_datetime(datetime.utcn
     save_predictions_to_feature_store(predictions)
 
     logger.info("Inference DONE!")
+
+if __name__ == "__main__":
+    # parse command line arguments
+    parser=ArgumentParser()
+    parser.add_argument(
+            '--datetime',
+            type=lambda s: datetime.strptime(s, "%Y-%m-%d %H:%M:%S"),
+            help='Datetime argument in the format of YYYY-MM-DD HH:MM:SS')
+    args = parser.parse_args()
+
+    # if args.datetime we provided, use it as the current_date, otherwise
+    # use the current datetime
+    if args.datetime:
+        current_date =pd.to_datetime(args.datetime)
+    else:
+        current_date = pd.to_datetime(datetime.utcnow()).floor('H')
+    
+    logger.info(f"Running feature pipeline for {current_date=}")
+    inference(current_date)
