@@ -32,3 +32,25 @@ def save_predictions_to_feature_store(predcitions: pd.DataFrame) -> None:
         logger.info('Failed to save predictions to the feature store')
         logger.info('Retrying in 60 seconds...')
         raise e
+    
+
+def inference(current_date: Optional[pd.TimeStamp]= pd.to_datetime(datetime.utcnow()).floor('H'),) -> None:
+    """"""
+    logger.info(f"Running inference pipeline for {current_date}")
+    logger.info("Loaing batch of features from the feature store")
+    features =load_batch_of_features_from_store(current_date)
+
+    logger.info("Loading model from the model regsitry")
+    model = get_latest_model_from_registry(model_name=MODEL_NAME, status='Production')
+
+    logger.info("Generating predictions")
+    predictions = get_model_predictions(model, features)
+
+    # add `date` and `seconds` columns
+    predictions['date'] = current_date
+    predictions['seconds'] = predictions['date'].astype(int)//10**6
+
+    logger.info('Saving predictions to the feature store')
+    save_predictions_to_feature_store(predictions)
+
+    logger.info("Inference DONE!")
