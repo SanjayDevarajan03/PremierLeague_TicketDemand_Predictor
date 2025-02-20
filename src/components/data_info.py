@@ -117,4 +117,16 @@ def transform_ts_data_into_features_and_target(
     Slices and transposes data from time-series format into a (features, target)
     format that we can use to train Supervised ML models
     """
-    assert set(ts_data.columns) == {'temperature_2m', 'precipitation', 'visibility'}
+
+    assert set(ts_data.columns) == {'sub_region_code','temperature_2m', 'precipitation', 'visibility'}
+
+    region_codes = ts_data['sub_region_code'].unique()
+    features = pd.DataFrame()
+    targets = pd.DataFrame()
+
+    for code in tqdm.tqdm(region_codes):
+        # keep only ts data for this `location_id`
+        ts_data_one_location = ts_data.loc[
+            ts_data.sub_region_code == code,
+            
+        ]
