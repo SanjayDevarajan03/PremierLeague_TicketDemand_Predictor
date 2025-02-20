@@ -128,5 +128,13 @@ def transform_ts_data_into_features_and_target(
         # keep only ts data for this `location_id`
         ts_data_one_location = ts_data.loc[
             ts_data.sub_region_code == code,
-            
-        ]
+            ['date', 'temperature_2m', 'demand']
+        ].sort_values(by=['date'])
+
+
+        # pre-compute cutoff indices to split dataframe rows
+        indices = get_cutoff_indices_features_and_target(
+            ts_data_one_location,
+            input_seq_len,
+            step_size
+        )
