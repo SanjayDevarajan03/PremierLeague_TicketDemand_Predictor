@@ -60,3 +60,24 @@ def load_batch_of_features_from_store(current_date: pd.Timestamp) -> pd.DataFram
     ts_to = int(fetch_date_to.timestamp() * 1000)
     
     # Filter the data for the required time period
+    ts_data = ts_data.groupby('sub_region_code').tail(672)
+    print(ts_data.groupby('sub_region_code').tail(10))
+    print('Dates after filtering:')
+    print(ts_data['date'].min(), ts_data['date'].max())
+
+    # Sort data by location and time
+    ts_data.sort_values(by=['sub_region_code', 'date'], inplace=True)
+
+    # Count records per sub-region
+    location_counts = ts_data.groupby('sub_region_code').size()
+
+    # Identify valid sub-regions that meet the required record count
+    valid_sub_regions = location_counts[location_counts==config.N_FEATURES].index
+    print(valid_sub_regions)
+
+    # Filter the dataset to retain only valid sub-regions
+    ts_data = ts_data[ts_data['sub_region_code'].isin(valid_sub_regions)]
+
+    print(f"Filtered out sub-regions that do not meet the required {config.N_FEATURES} records.")
+
+    # Transpose time-series data into a feature for each `sub_region_code`.

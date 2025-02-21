@@ -1,51 +1,56 @@
-import os
-from dotenv import load_dotenv
-from src.components.feature_store_api import FeatureGroupConfig, FeatureViewConfig
-from src.paths import PARENT_DIR
+from typing import Optional, List
+from dataclasses import dataclass
+import hsfs
+import hopsworks
+import src.components.feature_group_config as config
+from src.logger import get_logger
 
-# load key-value pairs from .env file located in parent directory
-load_dotenv(PARENT_DIR/'.env')
+logger = get_logger()
 
-try:
-    HOPSWORKS_PROJECT_NAME = os.environ['HOPSWORKS_PROJECT_NAME']
-    HOPSWORKS_API_KEY = os.environ["HOPSWORKS_API_KEY"]
-except:
-    raise Exception(
-        "Create an .env file on the project root with the HOPSWORKS_PROJECT_NAME and HOPSWORKS_API_KEY"
+@dataclass
+class FeatureGroupConfig:
+    name: str
+    version: str
+    description: str
+    primary_key: List[str]
+    event_time: str
+    online_enabled: Optional[bool] = False
+
+@dataclass
+class FeatureViewConfig:
+    name: str
+    version: int
+    feature_group: FeatureGroupConfig
+
+def get_feature_store() -> hsfs.feature_store.FeatureStore:
+    """
+    Connects to Hopsworks and returns a pointer to the feature store
+
+    Returns:
+        hsfs.feature_store.FeatureStore: pointer to the feature store
+    """
+    project = hopsworks.login(
+        project=config.HOPSWORKS_PROJECT_NAME,
+        api_key_value = config.HOPSWORKS_API_KEY
     )
+    return project.get_feature_store()
 
-FEATURE_GROUP_METADATA = FeatureGroupConfig(
-    name = '',
-    version=0,
-    description='',
-    primary_key=['sub_region_code', 'date'],
-    event_time = 'date',
-    online_enabled=True
-)
+def get_or_create_feature_group(feature_group_metadata: FeatureGroupConfig) -> hsfs.feature_group.FeatureGroup:
+    """
+    Connects to the feature store and returns a pointer to the given feature group `name`
 
-FEATURE_VIEW_METADATA = FeatureViewConfig(
-    name='',
-    version=0,
-    feature_group=FEATURE_GROUP_METADATA
-)
+    Args:
+        name(str): name of the feature group
+        version (Optional[int], optional): _description_. Defaults to 1.
 
-MODEL_NAME = ''
-MODEL_VERSION = 0
-
-FEATURE_GROUP_MODEL_PREDICTIONS =  ''
-FEATURE_GROUP_PREDICTIONS_METADATA = FeatureGroupConfig(
-    name='',
-    version='',
-    description = 'Predictions generate by our production model',
-    primary_key = ['sub_region_code', 'date'],
-    event_time = 'date'
-)
-
-FEATURE_VIEW_PREDICTIONS_METADATA = FeatureViewConfig(
-    name = '',
-    version = 0,
-    feature_group = FEATURE_GROUP_PREDICTIONS_METADATA
-)
-
-MONITORING_FV_NAME = 'monitoring_feature_view5'
-MONITORING_FV_VERISON = ''
+    Returns:
+        hsfs.feature_group.FeatureGroup: pointer to the feature group
+    """
+    return get_feature_store().get_or_create_feature_group(
+        name=feature_group_metadata.name,
+        version=feature_group_metadata.version,
+        description=feature_group_metadata.description,
+        primary_key = feature_group_metadata.primary_key,
+        event_time = feature_group_metadata.event_time,
+        online_enabled = feature_group_metadata.online_enabled
+    )
