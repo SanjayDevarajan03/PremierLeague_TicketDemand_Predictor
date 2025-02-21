@@ -128,7 +128,7 @@ def transform_ts_data_into_features_and_target(
         # keep only ts data for this `location_id`
         ts_data_one_location = ts_data.loc[
             ts_data.sub_region_code == code,
-            ['date', 'temperature_2m', 'demand']
+            ['date', 'temperature_2m','precipitation', 'visibility', 'demand']
         ].sort_values(by=['date'])
 
 
@@ -138,3 +138,85 @@ def transform_ts_data_into_features_and_target(
             input_seq_len,
             step_size
         )
+
+        # slice and transpose data into numpy arrays for features and targets
+        n_examples = len(indices)
+        x = np.ndarray(shape=(n_examples, input_seq_len), dtype=np.float64)
+        y = np.ndarray(shape=(n_examples), dtype=np.float64)
+        date_hours = []
+        temperatures = []
+        precipitation = []
+        visibility = []
+        for i, idx in enumerate(indices):
+            x[i, :] = ts_data_one_location.iloc[idx[0]:idx[1]]['demand'].values()
+            y[i] = ts_data_one_location.iloc[idx[1]:idx[2]]['demand'].values[0]
+            date_hours.append(ts_data_one_location.iloc[idx[1]]['date'])
+            temperatures.append(ts_data_one_location.iloc[idx[1]]['temperature'])
+            precipitation.append(ts_data_one_location.iloc[idx[1]]['precipitation'])
+            visibility.append(ts_data_one_location.iloc[idx[1]]['visibility'])
+
+        # numpy -> pandas
+        features_one_location = pd.DataFrame(
+            x, columns=[f'demand_previous_{i+1}_hour' for i in reversed(range(input_seq_len))]
+        )
+
+        features_one_location['date'] = date_hours
+        features_one_location['temperature_2m'] = temperatures
+        features_one_location['precipitation'] = precipitation
+        features_one_location['visibility'] = visibility\
+        
+        # numpy -> pandas
+        targets_one_location = pd.DataFrame(y, columns = [f'target_demand_next_hour'])
+        
+
+        # concatenate results
+        features = pd.concat([features, features_one_location])
+        targets = pd.concat([targets, targets_one_location])
+
+
+    features.reset_index(inplace=True,drop=True)
+    targets.reset_index(inplace=True,drop=True)
+
+    return features, targets['target_demand_next_hour']
+
+
+# feature engineering on the merged data
+def train_test_split(df:pd.DataFrame, cutoff_date: datetime, target_column_name: str) -> Tuple[pd.DataFrame, pd.Series, pd.DataFrame, pd.Series]:
+    df['date'] = pd.to_datetime(df['date'], utc=True)
+    train_data = df[df.date < cutoff_date].reset_index(drop=True)
+    test_data = df[df.date >= cutoff_date].reset_index(drop=True)
+
+    X_train = train_data.drop(columns=[target_column_name])
+    y_train = train_data[target_column_name]
+    X_test  = test_data.drop(columns=[target_column_name])
+    y_test = test_data[target_column_name]
+
+    return X_train, y_train, X_test, y_test
+
+def fetch_demand_values_from_data_warehouse(from_date: datetime, to_date: datetime) -> pd.DataFrame:
+    """
+    Simulate production data by sampling historical data from 52 weeks ago (i.e 1 year),
+    adjusted to use a load_full_data function that takes full start_date and end_date as input.
+    """
+    # Calculate historical date range (1 year back)
+    from_date = from_date - timedelta(days=7*52)
+    to_date = to_date - timedelta(days=7*52)
+    print(f'Fetching demand values from {from_date} to {to_date}')
+
+    # Load data for the historical range using start date and end_date
+    demand_values = load_full_data(from_date, to_date)
+
+    # Ensure the data is within the range (optimal redundant check)
+    demand_values = demand_values[(demand_values.date >= from_date) & (demand_values.date < to_date)]
+
+    # Shift the date to pretend this is recent data
+    demand_values['date'] += timedelta(days=7*52)
+
+    # Sort the data by location and datetime for consistency
+    demand_values.sort_values(by=['date'], inplace=True)
+
+    return demand_values
+
+
+
+
