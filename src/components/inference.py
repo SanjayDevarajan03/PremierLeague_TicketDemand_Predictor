@@ -81,3 +81,12 @@ def load_batch_of_features_from_store(current_date: pd.Timestamp) -> pd.DataFram
     print(f"Filtered out sub-regions that do not meet the required {config.N_FEATURES} records.")
 
     # Transpose time-series data into a feature for each `sub_region_code`.
+    location_ids = ts_data['sub_region_code'].unique()
+    x = np.ndarray(shape=(len(location_ids), n_features), dtype = np.float32)
+
+    temperature_values = []
+    for i, location_id in enumerate(location_ids):
+        ts_data_i = ts_data.loc[ts_data.sub_region_code == location_id, :]
+        ts_data_i = ts_data_i.sort_values(by=['date'])
+        x[i, :] = ts_data_i['demand'].values
+        temperature_values.append(ts_data_i['temperature_2m'].iloc[-1])
