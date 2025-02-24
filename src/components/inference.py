@@ -90,3 +90,14 @@ def load_batch_of_features_from_store(current_date: pd.Timestamp) -> pd.DataFram
         ts_data_i = ts_data_i.sort_values(by=['date'])
         x[i, :] = ts_data_i['demand'].values
         temperature_values.append(ts_data_i['temperature_2m'].iloc[-1])
+
+
+    # Convert numpy arrays to Pandas dataframe
+    features = pd.DataFrame(
+        x, columns = [f'demand_previous_{i+1}_hour' for i in reversed(range(n_features))]
+    )
+
+    features['tempreature_2m'] = temperature_values
+    features['date'] = current_date
+    features['sub_region_code'] = location_ids
+    features.sort_values(by=['sub_region_code'], inplace=True)
