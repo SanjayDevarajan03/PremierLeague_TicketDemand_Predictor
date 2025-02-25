@@ -1,4 +1,4 @@
-# Hourly Electricity Demand Batch Prediction Service
+# Premier League Ticket Demand Prediction Service
 
 ## Project Overview  
 This project presents an end-to-end, production-ready electricity demand forecasting system designed to optimize energy supply and reduce operational costs for **Public energy company**. Utilizing MLOps best practices. The solution is fully automated, integrating data collection, feature engineering, model training, inference, and continuous monitoring into a seamless ML pipeline.
