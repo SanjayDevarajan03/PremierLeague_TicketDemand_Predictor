@@ -44,7 +44,7 @@ jupyter = "^1.1.1"
 nbconvert = "^7.16.6"
 retry-requests = "^2.0.0"
 openmeteo-requests = "^1.3.0"
-python-dotenv = ""
+
 
 
 [tool.poetry.group.dev.dependencies]

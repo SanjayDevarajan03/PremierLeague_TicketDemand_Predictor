@@ -4,6 +4,7 @@ import os
 PARENT_DIR = Path(__file__).parent.resolve().parent
 DATA_DIR = PARENT_DIR/'data'
 RAW_DATA_weather_DIR = PARENT_DIR/'data'/'raw'/'weather_raw_data'
+RAW_DATA_ticket_DIR = PARENT_DIR/'data'/'raw'/'ticket_raw_data'
 TRANSFORMED_DATA_DIR = PARENT_DIR/'data'/'transformed'
 DATA_CACHE_DIR = PARENT_DIR/'data'/'cache'
 
