@@ -56,5 +56,5 @@ def create_nyiso_geo_df():
         zones.append({
             'zone_id':zone_id,
             'name':info['name'],
-            'latitude':
+            'latitude':""
         })
