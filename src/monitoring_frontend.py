@@ -8,3 +8,11 @@ import plotly.express as px
 from src.components.monitoring import load_predictions_and_actual_values_from_store
 
 st.set_page_config(layout="wide")
+
+# title
+current_date = pd.to_datetime(datetime.now(tz=timezone.utc), utc=True).floor('H')
+st.title(f"Monitoring dashboard")
+
+progress_bar = st.sidebar.header('Working progress')
+progress_bar = st.sidebar.progress(0)
+N_STEPS = 3
