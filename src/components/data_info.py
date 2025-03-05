@@ -85,6 +85,7 @@ def download_and_extract_weather_data(start_date, end_date):
 
 def load_full_data(start_date, end_date):
     df1 = download_and_extract_weather_data(start_date, end_date)
+    #df2 = down
     full_date = pd.merge(df1,on="date", how="inner" )
     return full_date
 
