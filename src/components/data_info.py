@@ -7,7 +7,7 @@ from retry_requests import retry
 import openmeteo_requests
 from src.paths import *
 from typing import Optional
-from sklearn.prepreprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder
 import numpy as np
 import tqdm
 from datetime import datetime
