@@ -12,7 +12,7 @@ MODELS_DIR = PARENT_DIR/'models'
 Encoder_DIR = PARENT_DIR/'encoder'
 
 def make_fundamental_paths() -> None:
-    for path in [DATA_DIR, RAW_DATA_weather_DIR, 
+    for path in [DATA_DIR, RAW_DATA_weather_DIR, RAW_DATA_ticket_DIR,
                 TRANSFORMED_DATA_DIR, DATA_CACHE_DIR]:
         if not Path(path).exists():
             os.mkdir(path)
