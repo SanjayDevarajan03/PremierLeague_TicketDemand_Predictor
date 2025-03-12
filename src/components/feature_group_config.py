@@ -17,7 +17,7 @@ FEATURE_GROUP_METADATA = FeatureGroupConfig(
     version = 3,
     description = 'Feature group with hourly time-series data of historical demand values',
     primary_key = ['date'],
-    event_date = 'date',
+    event_time = 'date',
     online_enabled = True
 )
 
@@ -29,7 +29,7 @@ FEATURE_VIEW_METADATA = FeatureViewConfig(
 
 MODEL_NAME = 'ticket_demand_predictor_next_hour'
 MODEL_VERSION = 2
-FEATURE_GROUP_PREDICTIONS_METADATA = FeatureViewConfig(
+FEATURE_GROUP_PREDICTIONS_METADATA = FeatureGroupConfig(
     name = 'model_predictions_feature_group',
     version = 1,
     description = 'Predictions generate by our production model',
