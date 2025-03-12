@@ -89,7 +89,7 @@ We developed **two interactive Streamlit applications** for ticket demand foreca
 - A **Streamlit application** visualizes forecasted ticket demand for Premier League matches. 
 - The application features an interactive **stadium map** where the size of circles represents demand at specific venues.
 - Users can explore electricity demand variations across locations in real-time,
-- you can access the app [here](https://electricitydemandpredictor-3gaww4pzqsw6orh3vnkc4f.streamlit.app/) 
+- you can access the app [here]() 
 
 ### **Monitoring Dashboard**
 - A separate **Streamlit dashboard** monitors model performance on an hourly basis.
@@ -97,7 +97,7 @@ We developed **two interactive Streamlit applications** for ticket demand foreca
   - A real-time chart of **MAE trends**
   - Historical performance records
   - Comparison of predicted vs. actual ticket demand
-- you can access the dashbored [here](https://electricitydemandmonitor-2pe99wef2a5mdvtjnjqt4d.streamlit.app/) 
+- you can access the dashbored [here]() 
 
 
 ## summery
