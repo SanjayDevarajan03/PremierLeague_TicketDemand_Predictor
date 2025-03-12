@@ -27,8 +27,8 @@ To ensure accurate predictions, we use multiple data sources:
 - **Match Schedule & Team Performance**: Retrieved from Football-Data.org and TheSportsDB.
 - **Competing Events**: Other major events happening near stadiums fetched from Ticketmaster API
   
-## Project methodalgy 
-Our methodalgy features three-stage ML pipelines, leveraging modern MLOps principles such as feature stores, model registries, and automated inference to ensure scalability and reliability.
+## Project methodology 
+Our methodology features three-stage ML pipelines, leveraging modern MLOps principles such as feature stores, model registries, and automated inference to ensure scalability and reliability.
 
 ### **1. Feature Pipeline**
 
@@ -100,7 +100,7 @@ We developed **two interactive Streamlit applications** for ticket demand foreca
 - you can access the dashbored [here]() 
 
 
-## summery
+## Summary
 This project successfully implements prediction system for ticket demand forecasting. By leveraging machine learning, ticket vendors and clubs can optimize pricing strategies, improve stadium attendance, maximize revenue by achieiving the following:
 
  - **Automated ML Pipeline** → Fully automated process from data collection to inference.
