@@ -2,7 +2,7 @@
 
 ## Project Overview  
 This project presents an end-to-end, production-ready ticket demand forecasting system designed to ticket pricing and availibility for **Premier League matches**. Utilizing MLOps best practices. The solution is fully automated, integrating data collection, feature engineering, model training, inference, and continuous monitoring into a seamless ML pipeline.
-access the app [here](https://electricitydemandpredictor-3gaww4pzqsw6orh3vnkc4f.streamlit.app/) .
+access the app [here]() .
 
 #
 ![GIF](vid.gif)
