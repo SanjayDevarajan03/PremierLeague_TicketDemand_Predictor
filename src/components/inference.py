@@ -104,6 +104,8 @@ def load_batch_of_features_from_store(current_date: pd.Timestamp) -> pd.DataFram
     features['sub_region_code'] = location_ids
     features.sort_values(by=['sub_region_code'], inplace=True)
 
+    return features
+
 
 
 def load_model_from_registry():
@@ -126,6 +128,12 @@ def load_predictions_from_store(
     """
     Connects to the feature store and retrieves model predictions for all
     `sub_region_code`s and for the time period from `from_date` to `to_date`
+
+
+    Args:
+        from_date (datetime): min datetime(rounded hour) for which we want to get predictions
+
+        to_date (datetime): max datetime (rounded hour) for which we want to get predictions
     """
 
     # get pointer to the feature view
