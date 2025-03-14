@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 import hopsworks
 import pandas as pd
 import numpy as np
+import joblib
+from pathlib import Path
 
 import src.components.feature_group_config as config
 from src.components.feature_store_api import get_feature_store, get_or_create_feature_view
@@ -101,3 +103,17 @@ def load_batch_of_features_from_store(current_date: pd.Timestamp) -> pd.DataFram
     features['date'] = current_date
     features['sub_region_code'] = location_ids
     features.sort_values(by=['sub_region_code'], inplace=True)
+
+
+
+def load_model_from_registry():
+
+    project = get_hopsworks_project()
+    model_registry = project.get_model_registry()
+    model = model_registry.get_model(
+        name = config.MODEL_NAME,
+        version = config.MODEL_VERSION
+    )
+
+    model_dir = model.download()
+    model =joblib.load(Path(model_dir)/'LGB_model.pkl')
