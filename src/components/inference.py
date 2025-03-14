@@ -117,3 +117,37 @@ def load_model_from_registry():
 
     model_dir = model.download()
     model =joblib.load(Path(model_dir)/'LGB_model.pkl')
+
+
+def load_predictions_from_store(
+    from_date: datetime,
+    to_date: datetime
+):
+    """
+    Connects to the feature store and retrieves model predictions for all
+    `sub_region_code`s and for the time period from `from_date` to `to_date`
+    """
+
+    # get pointer to the feature view
+    predictions_fv = get_or_create_feature_view(FEATURE_VIEW_METADATA)
+
+    # get data from the feature view
+    print(f'Fetching predictions for `date` between {from_date} and {to_date}')
+    predictions = predictions_fv.get_batch_data(
+        start_time =from_date - timedelta(days=1),
+        end_time = to_date + timedelta(days=1)
+    )
+
+    # make sure datetimes are UTC aware
+    predictions['date'] = pd.to_datetime(predictions['date'], utc=True)
+    from_date = pd.to_datetime(from_date, utc=True)
+    to_date = pd.to_datetime(to_date, utc=True)
+
+    # make sure we keep only the range we want
+    predictions = predictions[predictions.date.between(from_date, to_date)]
+
+    # sort by `pickup_hour` and `pickup_location_id`
+    predictions.sort_values(by=['date', 'sub_region_code'], inplace=True)
+
+
+    return predictions
